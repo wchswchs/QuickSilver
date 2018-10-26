@@ -1,5 +1,10 @@
 package com.mtl.snapshot;
 
+import com.mtl.hulk.serializer.kryo.KryoSerializer;
+import com.mtl.snapshot.io.FastFile;
+
+import java.io.File;
+
 public class Snapshot {
 
     private SnapshotHeader header;
@@ -20,6 +25,14 @@ public class Snapshot {
 
     public SnapshotRule getRule() {
         return rule;
+    }
+
+    public void write(Object data) {
+        File file = rule.run(header);
+        FastFile ff = new FastFile(file, "rw", rule.getQuota().getBufferSize());
+        KryoSerializer serializer = new KryoSerializer();
+        ff.write(serializer.serialize(data));
+        ff.close();
     }
 
 }
