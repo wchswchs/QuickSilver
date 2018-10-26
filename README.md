@@ -1,7 +1,7 @@
 # QuickSilver
 本地高速快照系统
 
-该系统可用于本地快速持久化结构化数据。单个线程每毫秒可处理8500次写入操作。在高并发时，写入性能更高。
+该系统可用于本地快速持久化结构化数据。单个线程每毫秒可处理8500次写入操作。在高并发时，写入性能很高。
 
 ## 特性
 
@@ -47,5 +47,3 @@ public class SnapshotForSpringBoot {
 * mtl.snapshot.bufferSize：该属性指定读取/写入缓冲区大小，单位Byte，默认：20K
 
 * mtl.snapshot.perFileSize：该属性设置单个快照存储记录数，默认：1000
-
-
