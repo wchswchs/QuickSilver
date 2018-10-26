@@ -1,16 +1,14 @@
 package com.mtl.snapshot.bench.snapshot;
 
+import com.mtl.snapshot.Snapshot;
 import com.mtl.snapshot.bench.AbstractBenchmark;
-import com.mtl.snapshot.bench.model.OrderEntry;
-import com.mtl.hulk.serializer.kryo.KryoSerializer;
 import com.mtl.snapshot.SnapshotHeader;
 import com.mtl.snapshot.SnapshotRule;
-import com.mtl.snapshot.io.FastFile;
+import com.mtl.snapshot.bench.model.OrderEntry;
 import com.mtl.snapshot.rule.IncrementShardingRule;
 import com.mtl.snapshot.rule.Quota;
 import org.openjdk.jmh.annotations.*;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 @Fork(2)
@@ -25,12 +23,8 @@ public class SnapshotBenchmark extends AbstractBenchmark {
     public void writeSnapshot() {
         SnapshotHeader header = new SnapshotHeader("/data/hulk", "snapshot.test.log");
         SnapshotRule rule = new IncrementShardingRule(new Quota(10 * 1024, 1000));
-        File file = rule.run(header);
-        FastFile ff = new FastFile(file, "rw", rule.getQuota().getBufferSize());
-        KryoSerializer serializer = new KryoSerializer();
-        byte[] data = serializer.serialize(new OrderEntry("123456"));
-        ff.write(data);
-        ff.close();
+        Snapshot snapshot = new Snapshot(header, rule);
+        snapshot.write(new OrderEntry("12345"));
     }
 
 }

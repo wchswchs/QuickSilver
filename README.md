@@ -13,15 +13,11 @@
 #### 不使用Spring Boot
 ```java
 public void writeSnapshot() {
-        SnapshotHeader header = new SnapshotHeader("/data/hulk", "snapshot.test.log");
-        SnapshotRule rule = new IncrementShardingRule(new Quota(10 * 1024, 1000));
-        File file = rule.run(header);
-        FastFile ff = new FastFile(file, "rw", rule.getQuota().getBufferSize());
-        KryoSerializer serializer = new KryoSerializer();
-        byte[] data = serializer.serialize(new OrderEntry("123456"));
-        ff.write(data);
-        ff.close();
-    }
+    SnapshotHeader header = new SnapshotHeader("/data/hulk", "snapshot.test.log");
+    SnapshotRule rule = new IncrementShardingRule(new Quota(10 * 1024, 1000));
+    Snapshot snapshot = new Snapshot(header, rule);
+    snapshot.write(new OrderEntry("12345"));
+}
 ```
 
 #### 使用Spring Boot
@@ -34,12 +30,7 @@ public class SnapshotForSpringBoot {
 
     public void writeSnapshotForSpringBoot() {
         snapshot.getHeader().setFileName("snapshot.test.log");
-        snapshot.getRule().run(snapshot.getHeader());
-        FastFile ff = new FastFile(file, "rw", snapshot.getRule().getQuota().getBufferSize());
-        KryoSerializer serializer = new KryoSerializer();
-        byte[] data = serializer.serialize(new OrderEntry("123456"));
-        ff.write(data);
-        ff.close();
+        snapshot.write(new OrderEntry("12345"));
     }
     
 }
