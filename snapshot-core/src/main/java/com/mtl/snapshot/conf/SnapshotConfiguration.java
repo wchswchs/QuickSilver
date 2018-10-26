@@ -17,7 +17,7 @@ public class SnapshotConfiguration {
     }
 
     @Bean
-    public Snapshot snapShot() {
+    public Snapshot snapshot() {
         SnapshotProperties properties = factory.getProperties();
         return factory.createSnapshot(properties.getBufferSize(), properties.getPerFileSize());
     }

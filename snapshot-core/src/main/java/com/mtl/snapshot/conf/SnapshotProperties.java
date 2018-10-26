@@ -2,7 +2,7 @@ package com.mtl.snapshot.conf;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("mtl.hulk.snapshot")
+@ConfigurationProperties("mtl.snapshot")
 public class SnapshotProperties {
 
     private String rule = "increment";
