@@ -4,6 +4,7 @@ import com.mtl.hulk.serializer.kryo.KryoSerializer;
 import com.mtl.snapshot.io.FastFile;
 
 import java.io.File;
+import java.util.List;
 
 public class Snapshot {
 
@@ -27,12 +28,31 @@ public class Snapshot {
         return rule;
     }
 
-    public void write(Object data) {
-        File file = rule.run(header);
-        FastFile ff = new FastFile(file, "rw", rule.getQuota().getBufferSize());
-        KryoSerializer serializer = new KryoSerializer();
-        ff.write(serializer.serialize(data));
-        ff.close();
+    public boolean write(Object data) {
+        FastFile ff = null;
+        try {
+            File file = rule.run(header);
+            ff = new FastFile(file, "rw", rule.getQuota().getBufferSize());
+            KryoSerializer serializer = new KryoSerializer();
+            ff.write(serializer.serialize(data));
+            return true;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            ff.close();
+        }
+    }
+
+    public <T> List<T> read(File file, Class<T> targetClass) throws Exception {
+        FastFile ff = null;
+        try {
+            ff = new FastFile(file, "r", rule.getQuota().getBufferSize());
+            return ff.read(new KryoSerializer(), targetClass);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            ff.close();
+        }
     }
 
 }
